@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+balancer:
+  algorithm: "round-robin" # dopo andrà "carbon-aware"
+  api_key: "CHIAVE_DA_INSEIRE" # chiave per accedere all'API di carbon-aware
+
+nodes:
+  - url: "http://localhost:9001"
+    zone: "SE" # Svezia
+  - url: "http://localhost:9002"
+    zone: "DE" # Germania
+  - url: "http://localhost:9003"
+    zone: "US-TX" # Texas
