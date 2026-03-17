@@ -6,9 +6,11 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"time"
 
 	"green-balancer/balancer"
 	"green-balancer/config"
+	"green-balancer/emissions"
 	"green-balancer/strategy"
 )
 
@@ -21,9 +23,19 @@ func main() {
 		log.Fatalf("Errore critico nel caricamento della configurazione: %v", err)
 	}
 
-	// Inizializza il pool e l'algoritmo Round Robin
+	// Inizializza il pool e l'algoritmo di bilanciamento
 	pool := &balancer.ServerPool{}
-	var loadBalancerStrategy strategy.Strategy = &strategy.RoundRobin{}
+
+	// Strategia basata sul file config.yaml
+	var loadBalancerStrategy strategy.Strategy
+
+	if cfg.Balancer.Algorithm == "carbon-aware" {
+		fmt.Println("Strategia selezionata: Carbon-Aware")
+		loadBalancerStrategy = &strategy.CarbonAware{}
+	} else {
+		fmt.Println("Strategia selezionata: Round Robin")
+		loadBalancerStrategy = &strategy.RoundRobin{}
+	}
 
 	// Trasforma le URL del config.yaml in veri Nodi tramite Reverse Proxy
 	for _, nodeCfg := range cfg.Nodes {
@@ -43,6 +55,30 @@ func main() {
 		}
 		pool.Nodes = append(pool.Nodes, node)
 	}
+
+	// GOROUTINE: Aggiorna in background le emissioni di carbonio per ogni nodo 
+	go func() {
+		for {
+			for _, node := range pool.Nodes {
+				// Chiamata API
+				intensity, err := emissions.GetCarbonIntensity(node.Zone, cfg.Balancer.APIKey)
+				if err != nil {
+					fmt.Printf("Errore aggiornamento CO2 per zona %s: %v\n", node.Zone, err)
+					continue
+				}
+
+				// Aggiorna il valore usando il Lock in scrittura
+				node.Mux.Lock()
+				node.CarbonEmission = intensity
+				node.Mux.Unlock()
+			}
+			// Aspetta 10 secondi prima di controllare di nuovo
+			time.Sleep(10 * time.Second) 
+		}
+	}()
+
+	// GOROUTINE: Controlla in background la salute dei nodi
+	go pool.HealthCheck()
 
 	// Creazione server HTTP principale 
 	server := http.Server{

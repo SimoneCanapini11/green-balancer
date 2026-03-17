@@ -2,7 +2,7 @@ server:
   port: 8080
 
 balancer:
-  algorithm: "round-robin" # dopo andrà "carbon-aware"
+  algorithm: "carbon-aware" 
   api_key: "CHIAVE_DA_INSEIRE" # chiave per accedere all'API di carbon-aware
 
 nodes:

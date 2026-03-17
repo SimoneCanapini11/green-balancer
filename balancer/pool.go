@@ -12,7 +12,8 @@ type Node struct {
 	ReverseProxy *httputil.ReverseProxy // inoltra le richieste
 	Alive        bool
 	Zone         string
-	mux          sync.RWMutex // Mutex per evitare problemi di concorrenza
+	CarbonEmission float64 // Emissioni di CO2 per kWh 
+	Mux          sync.RWMutex // Mutex per evitare problemi di concorrenza
 }
 
 // Gestisce la lista dei nodi
