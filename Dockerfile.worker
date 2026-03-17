@@ -7,7 +7,7 @@ RUN go mod download || true
 COPY . .
 
 # Compilazione del Worker
-RUN go build -o worker worker/main.go
+RUN go build -o worker-app worker/main.go
 
 # Porta passata come parametro dal docker-compose
 ENTRYPOINT ["./worker-app"] 

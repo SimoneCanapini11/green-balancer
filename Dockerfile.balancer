@@ -12,7 +12,7 @@ RUN go mod download
 COPY . .
 
 # Compilazione del Load Balancer
-RUN go build -o balancer main.go
+RUN go build -o balancer-app main.go
 
 # Porta 8080 esposta verso l'esterno
 EXPOSE 8080
