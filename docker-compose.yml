@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # Load Balancer
+  loadbalancer:
+    build:
+      context: .
+      dockerfile: Dockerfile.balancer
+    ports:
+      - "8080:8080" # Collegamento 8080 PC -> 8080 del container
+    depends_on:
+      - worker1
+      - worker2
+      - worker3
+
+  # Nodo Svezia
+  worker1:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    command: ["-port", "9001"]
+
+  # Nodo Germania
+  worker2:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    command: ["-port", "9002"]
+
+  # Nodo Texas
+  worker3:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    command: ["-port", "9003"]

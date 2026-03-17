@@ -1,0 +1,21 @@
+# Immagine leggera con Go preinstallato
+FROM golang:alpine
+
+# Creazione cartella di lavoro dentro il container
+WORKDIR /app
+
+# Copia dei file per gestire le dipendenze
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copia di tutto il resto del codice
+COPY . .
+
+# Compilazione del Load Balancer
+RUN go build -o balancer main.go
+
+# Porta 8080 esposta verso l'esterno
+EXPOSE 8080
+
+# Comando di avvio
+CMD ["./balancer-app"]
