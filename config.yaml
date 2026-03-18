@@ -3,7 +3,7 @@ server:
 
 balancer:
   algorithm: "carbon-aware" #"round-robin"
-  api_key: "CHIAVE_DA_INSEIRE" # chiave per accedere all'API di carbon-aware
+  api_key: "Aq6yvG3zHghScrSZREBC" # chiave per accedere all'API di carbon-aware
 
 nodes:
   - url: "http://worker1:9001"
@@ -11,4 +11,4 @@ nodes:
   - url: "http://worker2:9002"
     zone: "DE" # Germania
   - url: "http://worker3:9003"
-    zone: "US-TX" # Texas
+    zone: "US-TEX-ERCO" # Texas

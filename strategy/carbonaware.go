@@ -12,7 +12,7 @@ type CarbonAware struct{}
 func (c *CarbonAware) NextNode(pool *balancer.ServerPool) *balancer.Node {
 	var bestNode *balancer.Node
 	
-	// Inizializzazione del minimo con un numero molto alto
+	// Inizializzazione del minimo
 	lowestCarbon := math.MaxFloat64 
 
 	for _, node := range pool.Nodes {
@@ -20,13 +20,17 @@ func (c *CarbonAware) NextNode(pool *balancer.ServerPool) *balancer.Node {
 		node.Mux.RLock()
 		alive := node.Alive
 		carbon := node.CarbonEmission
+		max := node.MaxConns
 		node.Mux.RUnlock()
 
-		// Se il nodo è vivo e inquina meno del minimo attuale...
-		if alive && carbon < lowestCarbon {
-			lowestCarbon = carbon
-			bestNode = node // ...diventa lui il nuovo candidato ideale!
-		}
+		// Connessioni ha attive in questo momento
+   		active := node.GetConns()
+
+		// Sceglie un nodo se: è vivo && inquina meno && non è saturo
+        if alive && carbon < lowestCarbon && active < max {
+        	bestNode = node
+      		lowestCarbon = carbon
+    	}
 	}
 
 	return bestNode

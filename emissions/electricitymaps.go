@@ -16,13 +16,13 @@ type CarbonResponse struct {
 // Contatta l'API per scoprire quanto inquina un nodo in tempo reale
 func GetCarbonIntensity(zone string, apiKey string) (float64, error) {
 	
-	// FALLBACK: Se non hai ancora inserito la chiave, usiamo dati simulati realistici --------
+	// FALLBACK: Se non hai ancora inserito la chiave, usiamo dati simulati realistici -----------
 	if apiKey == "CHIAVE_DA_INSEIRE" || apiKey == "" {
 		fmt.Printf("[API MOCK] Lettura simulata per la zona %s...\n", zone)
 		mockValues := map[string]float64{
 			"SE":    20.5,  // Svezia: molto verde 
 			"DE":    350.0, // Germania: inquina di più 
-			"US-TX": 450.0, // Texas: inquina molto
+			"US-TEX-ERCO": 450.0, // Texas: inquina molto
 		}
 		if val, exists := mockValues[zone]; exists {
 			return val, nil

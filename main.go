@@ -48,10 +48,12 @@ func main() {
 		proxy := httputil.NewSingleHostReverseProxy(parsedURL)
 
 		node := &balancer.Node{
-			URL:          parsedURL,
-			ReverseProxy: proxy,
-			Alive:        true,
-			Zone:         nodeCfg.Zone,
+			URL:            parsedURL,
+			ReverseProxy:   proxy,
+			Alive:          true,
+			Zone:           nodeCfg.Zone,
+			CarbonEmission: 9999.0,
+			MaxConns:       10,
 		}
 		pool.Nodes = append(pool.Nodes, node)
 	}
@@ -80,7 +82,7 @@ func main() {
 	// GOROUTINE: Controlla in background la salute dei nodi
 	go pool.HealthCheck()
 
-	// Creazione server HTTP principale 
+	// Creazione server HTTP 
 	server := http.Server{
 		Addr: fmt.Sprintf(":%d", cfg.Server.Port),
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -96,6 +98,12 @@ func main() {
 				http.Error(w, "Nessun nodo disponibile", http.StatusServiceUnavailable)
 				return
 			}
+
+			// Incrementa il contatore di connessioni attive per il nodo scelto
+			targetNode.IncConns()
+
+			// Assicura che il contatore venga decrementato quando la richiesta è completata
+			defer targetNode.DecConns() 
 
 			// Stampa dove sta mandando la richiesta
 			fmt.Printf("Inoltro richiesta al nodo: %s (Zona: %s)\n", targetNode.URL.String(), targetNode.Zone)
