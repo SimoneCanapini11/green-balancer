@@ -73,6 +73,7 @@ func main() {
 				node.Mux.Lock()
 				node.CarbonEmission = intensity
 				node.Mux.Unlock()
+
 			}
 			// Aspetta 10 secondi prima di controllare di nuovo
 			time.Sleep(10 * time.Second) 
