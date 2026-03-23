@@ -15,8 +15,8 @@ func main() {
 
 	// Crea una singola route che risponde a tutte le richieste
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// Simula un tempo di calcolo (es. 100 millisecondi)
-		time.Sleep(100 * time.Millisecond)
+		// Simula un tempo di calcolo per il worker (ad esempio, 1 secondo)
+		time.Sleep(1 * time.Second)
 		
 		fmt.Printf("Lavoro eseguito sul worker alla porta %s!\n", *port)
 		

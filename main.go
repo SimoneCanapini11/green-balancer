@@ -63,7 +63,8 @@ func main() {
 		for {
 			for _, node := range pool.Nodes {
 				// Chiamata API
-				intensity, err := emissions.GetCarbonIntensity(node.Zone, cfg.Balancer.APIKey)
+				baseURL := cfg.Balancer.APIBaseURL
+				intensity, err := emissions.GetCarbonIntensity(node.Zone, cfg.Balancer.APIKey, baseURL)
 				if err != nil {
 					fmt.Printf("Errore aggiornamento CO2 per zona %s: %v\n", node.Zone, err)
 					continue
@@ -96,7 +97,7 @@ func main() {
 			// Usa l'algoritmo per scegliere il nodo a cui inoltrare la richiesta
 			targetNode := loadBalancerStrategy.NextNode(pool)
 			if targetNode == nil {
-				http.Error(w, "Nessun nodo disponibile", http.StatusServiceUnavailable)
+				http.Error(w, "Servizio non disponibile. Riprova più tardi.", http.StatusServiceUnavailable)
 				return
 			}
 

@@ -20,6 +20,7 @@ type Config struct {
 	Balancer struct {
 		Algorithm string `yaml:"algorithm"`
 		APIKey    string `yaml:"api_key"`
+		APIBaseURL string `yaml:"api_base_url"`
 	} `yaml:"balancer"`
 	
 	Nodes []NodeConfig `yaml:"nodes"`

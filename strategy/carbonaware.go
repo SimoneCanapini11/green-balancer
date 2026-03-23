@@ -23,7 +23,7 @@ func (c *CarbonAware) NextNode(pool *balancer.ServerPool) *balancer.Node {
 		max := node.MaxConns
 		node.Mux.RUnlock()
 
-		// Connessioni ha attive in questo momento
+		// Connessioni attive in questo momento
    		active := node.GetConns()
 
 		// Sceglie un nodo se: è vivo && inquina meno && non è saturo

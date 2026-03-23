@@ -2,8 +2,9 @@ server:
   port: 8080
 
 balancer:
-  algorithm: "carbon-aware" #"round-robin"
+  algorithm: "carbon-aware"  
   api_key: "Aq6yvG3zHghScrSZREBC" # chiave per accedere all'API di carbon-aware
+  api_base_url: "https://api.electricitymap.org" # URL base per API 
 
 nodes:
   - url: "http://worker1:9001"

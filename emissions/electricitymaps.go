@@ -14,7 +14,7 @@ type CarbonResponse struct {
 }
 
 // Contatta l'API per scoprire quanto inquina un nodo in tempo reale
-func GetCarbonIntensity(zone string, apiKey string) (float64, error) {
+func GetCarbonIntensity(zone string, apiKey string, baseURL string) (float64, error) {
 	
 	// FALLBACK: Se non hai ancora inserito la chiave, usiamo dati simulati realistici -----------
 	if apiKey == "CHIAVE_DA_INSEIRE" || apiKey == "" {
@@ -27,11 +27,11 @@ func GetCarbonIntensity(zone string, apiKey string) (float64, error) {
 		if val, exists := mockValues[zone]; exists {
 			return val, nil
 		}
-		return 500.0, nil // Valore pessimo di default se la zona è sconosciuta
+		return 500.0, nil // Valore pessimo di default se la zona è sconosciuta --------------
 	}
 
-	// Indirizzo Free Tier di Electricity Maps
-	url := fmt.Sprintf("https://api.electricitymap.org/v3/carbon-intensity/latest?zone=%s", zone)
+	// URL per API Electricity Maps
+	url := fmt.Sprintf("%s/v3/carbon-intensity/latest?zone=%s", baseURL, zone)
 
 	// Richiesta HTTP in uscita
 	req, err := http.NewRequest("GET", url, nil)
@@ -43,7 +43,6 @@ func GetCarbonIntensity(zone string, apiKey string) (float64, error) {
 	req.Header.Add("auth-token", apiKey)
 
 	// Richiesta eseguita con un Timeout 
-	// Se l'API ci mette più di 5 secondi a rispondere, annulliamo tutto per non bloccarci.
 	client := &http.Client{Timeout: 5 * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -52,7 +51,7 @@ func GetCarbonIntensity(zone string, apiKey string) (float64, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return 0, fmt.Errorf("errore dall'API: status code %d", resp.StatusCode)
+		return 0, fmt.Errorf("Errore dall'API: status code %d", resp.StatusCode)
 	}
 
 	// Risposta JSON -> variabili Go
