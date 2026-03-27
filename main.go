@@ -76,8 +76,8 @@ func main() {
 				node.Mux.Unlock()
 
 			}
-			// Aspetta 10 secondi prima di controllare di nuovo
-			time.Sleep(10 * time.Second) 
+			// Aspetta 10 minuti prima di controllare di nuovo
+			time.Sleep(10 * time.Minute) 
 		}
 	}()
 
