@@ -17,8 +17,29 @@ Per eseguire l'architettura in locale e lanciare le suite di test, è necessario
 
 ## 2. Configurazione Iniziale
 
-Il bilanciatore interroga in tempo reale le API di telemetria (es. Electricity Maps) per ottenere l'intensità carbonica delle *Grid Zones* (Svezia, Germania, Texas).
+Il Load Balancer interroga in tempo reale l'API (Electricity Maps) per ottenere l'intensità carbonica delle *Grid Zones* (Svezia, Germania, Texas).
 
 Per abilitare le chiamate API reali, creare un file `.env` nella directory principale (root) del progetto:
 ```env
 API_KEY=la_tua_chiave_api_qui
+
+**Nota di Resilienza:** L'inserimento della chiave non è strettamente obbligatorio per testare il routing. In assenza di una chiave valida (o in caso di API offline), il Load Balancer attiverà in automatico i pattern di Fallback, basandosi su valori emissivi storici simulati, garantendo il continuo instradamento del traffico senza errori a runtime.
+
+---
+
+## 3. Start in ambiente locale
+
+L'intera architettura è riproducibile localmente con un singolo comando.
+
+Aprire il terminale nella root del progetto ed eseguire:
+```bash
+docker-compose up --build -d
+
+Il Load Balancer sarà in ascolto sulla porta configurata (es. `localhost:8080`).
+
+Per arrestare l'ambiente e pulire le risorse allocate (network e container):
+```bash
+docker-compose down
+
+---
+
