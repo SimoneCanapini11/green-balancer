@@ -23,7 +23,7 @@ Per abilitare le chiamate API reali, copiare il file `.env` nella directory prin
 ```env
 API_KEY=la_chiave_api_va_qui
 ```
-**Nota sulla sicurezza:** Il file `.env` è inserito nel `.gitignore` e non verrà tracciato dal controllo di versione.
+**Nota sulla sicurezza:** Il file `.env` è stato inserito nel `.gitignore` e non verrà tracciato dal controllo di versione.
 
 **Nota di Resilienza:** L'inserimento della chiave non è strettamente obbligatorio per testare il routing. In assenza di una chiave valida (o in caso di API offline), il Load Balancer attiverà in automatico i pattern di Fallback, basandosi su valori emissivi storici simulati, garantendo il continuo instradamento del traffico senza errori a runtime.
 
