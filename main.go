@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -64,7 +65,7 @@ func main() {
 			for _, node := range pool.Nodes {
 				// Chiamata API
 				baseURL := cfg.Balancer.APIBaseURL
-				intensity, err := emissions.GetCarbonIntensity(node.Zone, cfg.Balancer.APIKey, baseURL)
+				intensity, err := emissions.GetCarbonIntensity(node.Zone, os.Getenv("API_KEY"), baseURL)
 				if err != nil {
 					fmt.Printf("Errore aggiornamento CO2 per zona %s: %v\n", node.Zone, err)
 					continue

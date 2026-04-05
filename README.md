@@ -93,6 +93,3 @@ Assicurandosi che i container siano in esecuzione (docker-compose up -d), lancia
 k6 run test/load_test.js 
 ```
 I risultati evidenzieranno la perfetta distribuzione dinamica delle richieste in base al limite di tolleranza di ciascun worker.
-
-
------------> sicurezza api e link
