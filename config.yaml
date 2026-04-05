@@ -3,7 +3,7 @@ server:
 
 balancer:
   algorithm: "carbon-aware"  
-  api_key: "Aq6yvG3zHghScrSZREBC" # chiave per accedere all'API di carbon-aware
+  api_key: ${API_KEY} # chiave per accedere all'API di carbon-aware
   api_base_url: "https://api.electricitymap.org" # URL base per API 
 
 nodes:

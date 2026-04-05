@@ -2,7 +2,7 @@
 
 Questo repository contiene l'implementazione di un Reverse Proxy sviluppato in **Go**, progettato per integrare i principi del *Green Cloud Computing* nel routing di rete. 
 
-Il sistema è dotato di logiche di instradamento dinamico **Carbon-Aware**, bilanciando il traffico verso le regioni Cloud con la minore intensità carbonica in tempo reale. Per garantire High Availability e prevenire fallimenti a cascata, l'architettura implementa pattern di resilienza avanzati, tra cui **Circuit Breaker** e **Graceful Degradation**. L'infrastruttura è stata collaudata sia in ambiente locale tramite container, sia in produzione su istanze Amazon Web Services (AWS EC2).
+Il sistema è dotato di logiche di instradamento dinamico *Carbon-Aware*, bilanciando il traffico verso le regioni Cloud con la minore intensità carbonica in tempo reale. Per garantire High Availability e prevenire fallimenti a cascata, l'architettura implementa pattern di resilienza avanzati, tra cui *Circuit Breaker* e *Graceful Degradation*. L'infrastruttura è stata collaudata sia in ambiente locale tramite container, sia in produzione su istanze Amazon Web Services (AWS EC2).
 
 ---
 
@@ -19,10 +19,11 @@ Per eseguire l'architettura in locale e lanciare le suite di test, è necessario
 
 Il Load Balancer interroga in tempo reale l'API (Electricity Maps) per ottenere l'intensità carbonica delle *Grid Zones* (Svezia, Germania, Texas).
 
-Per abilitare le chiamate API reali, creare un file `.env` nella directory principale (root) del progetto:
+Per abilitare le chiamate API reali, copiare il file `.env` nella directory principale (root) del progetto, sostituendolo al file `.env.example`:
 ```env
-API_KEY=la_tua_chiave_api_qui
+API_KEY=la_chiave_api_va_qui
 ```
+**Nota sulla sicurezza:** Il file `.env` è inserito nel `.gitignore` e non verrà tracciato dal controllo di versione.
 
 **Nota di Resilienza:** L'inserimento della chiave non è strettamente obbligatorio per testare il routing. In assenza di una chiave valida (o in caso di API offline), il Load Balancer attiverà in automatico i pattern di Fallback, basandosi su valori emissivi storici simulati, garantendo il continuo instradamento del traffico senza errori a runtime.
 
@@ -69,5 +70,29 @@ cd green-balancer
 sudo docker compose up --build -d
 ```
 
-Il Reverse Proxy Carbon-Aware sarà ora operativo e raggiungibile pubblicamente tramite l'IP pubblico (o il record DNS) dell'istanza EC2.
+Il Reverse Proxy Carbon-Aware sarà raggiungibile pubblicamente tramite l'IP pubblico dell'istanza EC2.
 
+---
+
+## 5. Testing e Validazione
+**Validazione della Resilienza (Fault Injection)**
+Per testare il comportamento del sistema in condizioni di guasto (attivazione del Circuit Breaker, mantenimento della latenza azzerata tramite Stale Cache e Fallback statistico), è stata sviluppata una suite di API Mocking.
+Posizionarsi nella root del progetto ed eseguire:
+```bash
+go test ./strategy -v (test per carbonaware_test.go)
+
+go test ./emissions -v (test per emissions_test.go)
+
+go test ./balancer -v (test per integration_test.go)
+```
+
+**Stress Test e Validazione dello Spillover (Chaos Engineering)**
+Per verificare la corretta attivazione della logica di Spillover (dirottamento del traffico verso il secondo nodo più ecologico in caso di saturazione delle connessioni concorrenti sul nodo primario), utilizzare il framework k6.
+Assicurandosi che i container siano in esecuzione (docker-compose up -d), lanciare lo script di carico su un secondo terminale:
+```bash
+k6 run test/load_test.js 
+```
+I risultati evidenzieranno la perfetta distribuzione dinamica delle richieste in base al limite di tolleranza di ciascun worker.
+
+
+-----------> sicurezza api e link
