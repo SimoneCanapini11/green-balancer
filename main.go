@@ -17,7 +17,7 @@ import (
 
 func main() {
 	fmt.Println("Inizializzazione Green Load Balancer...")
-
+	
 	// Legge il file config.yaml
 	cfg, err := config.LoadConfig("config.yaml")
 	if err != nil {

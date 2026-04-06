@@ -60,7 +60,7 @@ func getDefaultPenalty(zone string) float64 {
 func GetCarbonIntensity(zone string, apiKey string, baseURL string) (float64, error) {
 	
 	// FALLBACK: Se manca la chiave API
-	if apiKey == "CHIAVE_DA_INSEIRE" || apiKey == "" {
+	if apiKey == "" {
         fmt.Printf("[API MOCK] Lettura simulata per la zona %s...\n", zone)
         return getDefaultPenalty(zone), nil
     }
